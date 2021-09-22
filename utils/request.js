@@ -37,7 +37,7 @@ class Request {
     };
   }
 
-  static post(
+  post(
     endpoint,
     params = {},
     contentType = 'application/json',
