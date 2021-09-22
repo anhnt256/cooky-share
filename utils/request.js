@@ -37,12 +37,12 @@ class Request {
     };
   }
 
-  post(
+  post = (
     endpoint,
     params = {},
     contentType = 'application/json',
     isBlob = false,
-  ) {
+  ) => {
     if (contentType === 'application/x-www-form-urlencoded') {
       params = qs.stringify(params);
     }
