@@ -1,4 +1,4 @@
-import CryptoJS from 'crypto-js';
+const CryptoJS = require("crypto-js");
 
 class cooky {
 

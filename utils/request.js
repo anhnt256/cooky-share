@@ -1,5 +1,5 @@
-import axios from 'axios';
-import qs from 'qs';
+const axios = require("crypto");
+const qs = require("qs");
 import cooky from './cooky';
 import utils from './index';
 
