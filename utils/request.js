@@ -43,7 +43,7 @@ class Request {
     };
   }
 
-  static post = (endpoint, params = {}) => {
+  post = (endpoint, params = {}) => {
     params = qs.stringify(params);
     return axios
       .post(this.rootAPI + endpoint, params, {
@@ -58,7 +58,7 @@ class Request {
       });
   };
 
-  static get = (endpoint, params = {}) => {
+  get = (endpoint, params = {}) => {
     const checksum = cooky.generateChecksumByParams(params);
     params = qs.stringify(params);
     params = { ...params, checksum };
