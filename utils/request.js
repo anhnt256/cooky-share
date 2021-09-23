@@ -1,4 +1,4 @@
-const axios = require("crypto");
+const axios = require("axios");
 const qs = require("qs");
 import cooky from './cooky';
 import utils from './index';
