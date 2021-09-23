@@ -67,4 +67,4 @@ class cooky {
   }
 }
 
-export default cooky;
+module.exports = cooky;

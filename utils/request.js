@@ -1,7 +1,7 @@
-import { isEmpty } from './index';
 import axios from 'axios';
 import qs from 'qs';
 import cooky from './cooky';
+import utils from './index';
 
 const city = cooky.getCityFromCookie();
 const authorization = cooky.getCookie('CookyCredential');
@@ -36,8 +36,8 @@ class Request {
       'X-Cooky-Client-Language': this.clientLanguage,
       'X-Cooky-Timestamp': new Date().getTime(),
       'Content-Type': 'application/json',
-      ...(!isEmpty(authorization) && { Authorization: authorization }),
-      ...(!isEmpty(cityId) && { 'X-Cooky-City': cityId.toString() }),
+      ...(!utils.isEmpty(authorization) && { Authorization: authorization }),
+      ...(!utils.isEmpty(cityId) && { 'X-Cooky-City': cityId.toString() }),
       ...(sellerIds &&
         sellerIds.length > 0 && { 'X-Cooky-Seller': sellerIds[0].toString() }),
     };
@@ -76,4 +76,4 @@ class Request {
   };
 }
 
-export default Request;
+module.exports = Request;
