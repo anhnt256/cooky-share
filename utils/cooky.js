@@ -1,6 +1,13 @@
 import CryptoJS from 'crypto-js';
 
 class cooky {
+
+  constructor(
+    secretKey = '9d6c826b-4cfc-4613-aee4-4ffe823ce69a',
+  ) {
+    this.secretKey = secretKey;
+  }
+
   static getCookie(cookieName) {
     const str = `${cookieName}=`;
     const ca = document.cookie.split(';');
@@ -31,12 +38,32 @@ class cooky {
     const cookieCity = cooky.getCookie('CookyCity'); //decrypted one
     if (cookieCity) {
       const strEncrypted = cookieCity.split('@')[0];
-      const bytes = CryptoJS.AES.decrypt(strEncrypted, secretKey);
+      const bytes = CryptoJS.AES.decrypt(strEncrypted, this.secretKey);
       const city = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
 
       if (city && city.id > 0) return city;
     }
     return null;
+  }
+
+  static generateChecksumByParams(params) {
+    if (!params) {
+      return '';
+    }
+
+    let str = '';
+
+    for (let index = 0, length = params.length; index < length; index++) {
+      str = str + params[index].toString();
+    }
+
+    str = str + this.secretKey;
+
+    if (str && str.length > 0) {
+      return md5(str);
+    }
+
+    return '';
   }
 }
 

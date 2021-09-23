@@ -1,4 +1,8 @@
-import cooky, { isEmpty } from './index';
+import { isEmpty } from './index';
+import axios from 'axios';
+import qs from 'qs';
+import cooky from './cooky';
+
 const city = cooky.getCityFromCookie();
 const authorization = cooky.getCookie('CookyCredential');
 const user = cooky.getCookie('CookyUser');
@@ -11,6 +15,7 @@ class Request {
     clientId = '0101',
     clientLanguage = 'vi',
     secretKey = '9d6c826b-4cfc-4613-aee4-4ffe823ce69a',
+    rootAPI = '',
   ) {
     this.secretKey = secretKey;
     this.clientVersion = clientVersion;
@@ -18,6 +23,7 @@ class Request {
     this.clientType = clientType;
     this.clientId = clientId;
     this.clientLanguage = clientLanguage;
+    this.rootAPI = rootAPI;
   }
 
   static header() {
@@ -37,51 +43,37 @@ class Request {
     };
   }
 
-  post = (
-    endpoint,
-    params = {},
-    contentType = 'application/json',
-    isBlob = false,
-  ) => {
-    if (contentType === 'application/x-www-form-urlencoded') {
-      params = qs.stringify(params);
-    }
+  static post = (endpoint, params = {}) => {
+    params = qs.stringify(params);
     return axios
-      .post(__API_ROOT__ + endpoint, params, {
-        headers: Request.header(contentType),
-        ...(isBlob && { responseType: 'blob' }),
+      .post(this.rootAPI + endpoint, params, {
+        headers: Request.header(),
         withCredentials: true,
-        xsrfCookieName: 'csrftoken',
-        xsrfHeaderName: 'x-csrftoken',
       })
       .then((response) => {
         return response;
       })
       .catch((error) => {
-        if (error.response.status === 401) {
-          store.dispatch(stopAppLoading());
-          store.dispatch(clearLocalStorage());
-        } else if (error.response.status === 500) {
-          return error.response;
-        } else if (
-          error.response.status === 400 &&
-          error.response.data &&
-          error.response.data.length
-        ) {
-          const errorData = error.response.data[0];
-          return {
-            ...error.response,
-            data: {
-              error_code: 400,
-              detail: Object.keys(errorData)
-                .map((key) => `${key}: ${errorData[key]}`)
-                .join('/n'),
-            },
-          };
-        }
-        throw error;
+        console.log(error);
       });
-  }
+  };
+
+  static get = (endpoint, params = {}) => {
+    const checksum = cooky.generateChecksumByParams(params);
+    params = qs.stringify(params);
+    params = { ...params, checksum };
+    return axios
+      .get(this.rootAPI + endpoint, params, {
+        headers: Request.header(),
+        withCredentials: true,
+      })
+      .then((response) => {
+        return response;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 }
 
 export default Request;
